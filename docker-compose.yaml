@@ -1,0 +1,16 @@
+version: "3"
+services:
+  mysql:
+    image: mysql:8
+    container_name: sem_mysql
+    restart: unless-stopped
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+      MYSQL_DATABASE: books
+      MYSQL_USER: avid_reader
+      MYSQL_PASSWORD: i_love_books
+    volumes:
+      # Dump files for initiating tables
+      - ./data/:/docker-entrypoint-initdb.d/
