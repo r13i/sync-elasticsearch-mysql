@@ -1,0 +1,5 @@
+README.md
+LICENSE
+data/
+volumes/elasticsearch
+volumes/mysql
