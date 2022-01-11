@@ -3,6 +3,7 @@ services:
   mysql:
     image: mysql:8
     container_name: sem_mysql
+    platform: linux/x86_64
     # restart: on-failure
     ports:
       - 3306:3306
@@ -15,34 +16,46 @@ services:
       # Dump files for initiating tables
       - ./data/:/docker-entrypoint-initdb.d/
     logging:
-        driver: "json-file"
-        options:
-            max-size: "10k"
-            max-file: "10"
+      driver: "json-file"
+      options:
+        max-size: "10k"
+        max-file: "10"
+    deploy:
+      replicas: 1
+      resources:
+        limits: 
+          memory: 512M
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.3
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.16.2
     container_name: sem_elasticsearch
+    platform: linux/x86_64
     # restart: on-failure
     environment:
       - discovery.type=single-node
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
+    #ulimits:
+    #  memlock:
+    #    soft: -1
+    #    hard: -1
     volumes:
       - ./volumes/elasticsearch:/usr/share/elasticsearch/data
     logging:
-        driver: "json-file"
-        options:
-            max-size: "10k"
-            max-file: "10"
+      driver: "json-file"
+      options:
+        max-size: "10k"
+        max-file: "10"
+    deploy:
+      replicas: 1
+      resources:
+        limits: 
+          memory: 512M
   logstash:
     build:
       context: .
       dockerfile: Dockerfile-logstash
     container_name: sem_logstash
+    platform: linux/x86_64
     # restart: on-failure
     depends_on:
       - mysql
@@ -58,11 +71,12 @@ services:
         max-size: "10k"
         max-file: "10"
   kibana:
-    image: docker.elastic.co/kibana/kibana:7.9.3
+    image: docker.elastic.co/kibana/kibana:7.16.2
     container_name: sem_kibana
+    platform: linux/x86_64
     environment:
-      - "ELASTICSEARCH_URL=http://elasticsearch:9200"
-      - "SERVER_NAME=127.0.0.1"
+      SERVER_NAME: kibana.local
+      ELASTICSEARCH_HOSTS: '["http://elasticsearch:9200"]'
     ports:
       - 5601:5601
     depends_on:

@@ -6,4 +6,4 @@
   path.config: "/usr/share/logstash/pipeline/from-scratch.conf"
 
 - pipeline.id: incremental-pipeline
-  path.config: "/usr/share/logstash/pipeline/incremental.conf"
+  path.config: "/usr/share/logstash/pipeline/logstash-incremental.conf"
